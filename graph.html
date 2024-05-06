@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "skyblue", "font": {"color": "white"}, "id": "Page_Homepage", "label": "Page_Homepage", "shape": "dot"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Page_Projects", "label": "Page_Projects", "shape": "dot"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Page_Models", "label": "Page_Models", "shape": "dot"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Page_Actions", "label": "Page_Actions", "shape": "dot"}, {"color": "skyblue", "font": {"color": "white"}, "id": "Page_Configuration", "label": "Page_Configuration", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "white"}, "id": "Component_nb", "label": "Component_nb", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "white"}, "id": "Component_mmc", "label": "Component_mmc", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "white"}, "id": "Component_mc", "label": "Component_mc", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "white"}, "id": "Component_ac", "label": "Component_ac", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "white"}, "id": "Component_cc", "label": "Component_cc", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "white"}, "id": "Component_rc", "label": "Component_rc", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "white"}, "id": "Component_uc", "label": "Component_uc", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "white"}, "id": "Component_nb-l", "label": "Component_nb-l", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "white"}, "id": "Component_cc1", "label": "Component_cc1", "shape": "dot"}, {"color": "lightgreen", "font": {"color": "white"}, "id": "Component_cc2", "label": "Component_cc2", "shape": "dot"}, {"color": "salmon", "font": {"color": "white"}, "id": "Endpoint_/platforms", "label": "Endpoint_/platforms", "shape": "dot"}, {"color": "salmon", "font": {"color": "white"}, "id": "Endpoint_/platforms/{platformId}", "label": "Endpoint_/platforms/{platformId}", "shape": "dot"}, {"color": "salmon", "font": {"color": "white"}, "id": "Endpoint_/platforms/{platformId}/metamodels", "label": "Endpoint_/platforms/{platformId}/metamodels", "shape": "dot"}, {"color": "salmon", "font": {"color": "white"}, "id": "Endpoint_/platforms/{platformId}/models", "label": "Endpoint_/platforms/{platformId}/models", "shape": "dot"}, {"color": "salmon", "font": {"color": "white"}, "id": "Endpoint_/platforms/{platformId}/workflows", "label": "Endpoint_/platforms/{platformId}/workflows", "shape": "dot"}, {"color": "salmon", "font": {"color": "white"}, "id": "Endpoint_/platforms/{platformId}/roles", "label": "Endpoint_/platforms/{platformId}/roles", "shape": "dot"}, {"color": "salmon", "font": {"color": "white"}, "id": "Endpoint_/platforms/{platformId}/users", "label": "Endpoint_/platforms/{platformId}/users", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "white"}, "id": "Metaclass_Platform", "label": "Metaclass_Platform", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "white"}, "id": "Metaclass_Metamodel", "label": "Metaclass_Metamodel", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "white"}, "id": "Metaclass_Model", "label": "Metaclass_Model", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "white"}, "id": "Metaclass_Workflow", "label": "Metaclass_Workflow", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "white"}, "id": "Metaclass_Role", "label": "Metaclass_Role", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "white"}, "id": "Metaclass_User", "label": "Metaclass_User", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"color": "#999999", "from": "Page_Homepage", "to": "Component_nb-l"}, {"color": "#999999", "from": "Page_Homepage", "to": "Component_mmc"}, {"color": "#999999", "from": "Page_Homepage", "to": "Component_mc"}, {"color": "#999999", "from": "Page_Projects", "to": "Component_nb-l"}, {"color": "#999999", "from": "Page_Projects", "to": "Component_mmc"}, {"color": "#999999", "from": "Page_Models", "to": "Component_nb-l"}, {"color": "#999999", "from": "Page_Models", "to": "Component_mc"}, {"color": "#999999", "from": "Page_Actions", "to": "Component_nb-l"}, {"color": "#999999", "from": "Page_Actions", "to": "Component_ac"}, {"color": "#999999", "from": "Page_Configuration", "to": "Component_nb-l"}, {"color": "#999999", "from": "Page_Configuration", "to": "Component_cc"}, {"color": "#999999", "from": "Component_nb", "to": "Component_nb-l"}, {"color": "#999999", "from": "Component_mmc", "to": "Endpoint_/platforms/{platformId}/metamodels"}, {"color": "#999999", "from": "Component_mc", "to": "Endpoint_/platforms/{platformId}/models"}, {"color": "#999999", "from": "Component_mc", "to": "Endpoint_/platforms/{platformId}/metamodels"}, {"color": "#999999", "from": "Component_ac", "to": "Endpoint_/platforms/{platformId}/workflows"}, {"color": "#999999", "from": "Component_cc", "to": "Component_cc1"}, {"color": "#999999", "from": "Component_cc", "to": "Component_cc2"}, {"color": "#999999", "from": "Component_rc", "to": "Endpoint_/platforms/{platformId}/roles"}, {"color": "#999999", "from": "Component_rc", "to": "Component_cc1"}, {"color": "#999999", "from": "Component_uc", "to": "Endpoint_/platforms/{platformId}/users"}, {"color": "#999999", "from": "Component_uc", "to": "Component_cc2"}, {"color": "#999999", "from": "Endpoint_/platforms", "to": "Metaclass_Platform"}, {"color": "#999999", "from": "Endpoint_/platforms/{platformId}", "to": "Metaclass_Platform"}, {"color": "#999999", "from": "Endpoint_/platforms/{platformId}/metamodels", "to": "Metaclass_Metamodel"}, {"color": "#999999", "from": "Endpoint_/platforms/{platformId}/models", "to": "Metaclass_Model"}, {"color": "#999999", "from": "Endpoint_/platforms/{platformId}/workflows", "to": "Metaclass_Workflow"}, {"color": "#999999", "from": "Endpoint_/platforms/{platformId}/roles", "to": "Metaclass_Role"}, {"color": "#999999", "from": "Endpoint_/platforms/{platformId}/users", "to": "Metaclass_User"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
